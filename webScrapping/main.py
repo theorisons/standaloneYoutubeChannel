@@ -6,7 +6,6 @@ import requests
 from bs4 import BeautifulSoup
 
 # constantes
-AGENT_HEADER = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0"
 MAIN_URL = "http://www.lesfables.fr"
 
 
@@ -18,10 +17,7 @@ class HtmlParser:
 
     def getHtml(self):
         """ Get the html corresponding to the url"""
-        self.html = requests.get(self.url,
-                                 headers={
-                                     "User-Agent": AGENT_HEADER
-                                 }).text
+        self.html = requests.get(self.url).text
 
     def parsing(self):
         """ Parse the html page """
