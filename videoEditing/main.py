@@ -1,9 +1,17 @@
 from moviepy.editor import *
+import subprocess
+import os
 
 sizeVideo = (1920, 1080)  #FullHD size
 font = "FiraCode-Regular"  #All letter have same size
 
 colorText = "white"
+
+finalText = "Video generée automatiquement"
+finalCopyright = "© Théorisons 2020"
+
+pathToFablesFromRoot = "./webScrapping/fables/"
+outputFolderVideos = "videos"
 
 background = ColorClip(size=sizeVideo, color=[0, 255, 0])  #Background
 
@@ -92,7 +100,7 @@ class TextToDisplay:
 
 
 class ProcessFable:
-    def __init__(self, fablePath):
+    def __init__(self, fablePath, outputName, pathOutput):
         fable = open(fablePath, "r")
         lines = fable.readlines()
         fable.close()
@@ -117,12 +125,32 @@ class ProcessFable:
                 tabSegments.append(
                     VideoMaker(lines[i].strip("\n"), 100,
                                lines[i + 1].strip("\n"), 100).video)
+
+        tabSegments.append(
+            VideoMaker(finalText, 150, finalCopyright, 150).video)
+
         concat = concatenate_videoclips(tabSegments)
-        concat.write_videofile("./bob.avi", fps=30, codec='mpeg4')
+        concat.write_videofile("{}/{}".format(pathOutput, outputName),
+                               fps=30,
+                               codec='mpeg4')
 
 
 def main():
-    ProcessFable("./webScrapping/fables/2/3.txt")
+
+    os.system("mkdir {}".format(outputFolderVideos))
+    os.chdir("../{}".format(pathToFablesFromRoot))
+
+    nbFolders = len(subprocess.getoutput("ls").split("\n"))
+
+    for folder in range(1, nbFolders + 1):
+        os.chdir("{}".format(folder))
+        nbFiles = len(subprocess.getoutput("ls").split("\n"))
+
+        for file in range(1, nbFiles + 1):
+            ProcessFable("{}.txt".format(file),
+                         "{}_{}.avi".format(folder, file),
+                         "../../../videoEditing/{}".format(outputFolderVideos))
+        os.chdir("..")
 
 
 if __name__ == "__main__":
