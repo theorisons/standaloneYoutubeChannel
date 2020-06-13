@@ -89,9 +89,16 @@ class ExtractFable:
         self.parsed.do()
 
     def getFable(self):
-        fable = self.parsed.getParse().find_all(
+        fable = []
+
+        tmpFable = self.parsed.getParse().find_all(
             "div", "field-item even")[3]  # fable container
-        fable = fable.find("p").text.split("\n")  # Convert the fable in array
+
+        tmpFable = tmpFable.find_all("p")
+
+        for f in tmpFable:
+            fable += f.text.split("\n")
+        # Convert the fable in array
         # Each entry is a line
 
         return (fable)

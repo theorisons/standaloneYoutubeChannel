@@ -8,6 +8,7 @@ extensionDescription = "description"
 extensionTag = "tag"
 extensionTitle = "title"
 
+finalText = "Video generée automatiquement"
 finalCopyright = "Théorisons 2020"
 linkToChannel = "https://www.youtube.com/théorisons"
 
@@ -69,7 +70,7 @@ class ProcessFable:
         self.videoDescription.append("\n")
         self.videoDescription.append("\n")
 
-        self.videoDescription.append("Video générée automatiquement.")
+        self.videoDescription.append(finalText)
         self.videoDescription.append("\n")
         self.videoDescription.append(finalCopyright)
         self.videoDescription.append("\n")
