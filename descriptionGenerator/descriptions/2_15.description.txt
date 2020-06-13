@@ -1,4 +1,5 @@
 Le Coq et le Renard  | Jean de la Fontaine | Livre 2 Fable 15
+
 ___
 
 Sur la branche d’un arbre était en sentinelle
@@ -37,4 +38,5 @@ Car c’est double plaisir de tromper le trompeur.
 ___
 
 Video générée automatiquement.
-© Théorisons 2020
+Théorisons 2020
+https://www.youtube.com/théorisons

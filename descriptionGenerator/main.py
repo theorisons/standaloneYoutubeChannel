@@ -8,7 +8,8 @@ extensionDescription = "description"
 extensionTag = "tag"
 extensionTitle = "title"
 
-finalCopyright = "© Théorisons 2020"
+finalCopyright = "Théorisons 2020"
+linkToChannel = "https://www.youtube.com/théorisons"
 
 pathToFablesFromRoot = "./webScrapping/fables/"
 outputFolderDescriptions = "descriptions"
@@ -43,7 +44,7 @@ class ProcessFable:
                                   extensionDescription))
         self.writeFile(
             self.videoTag, "{}/{}.{}.txt".format(pathOutput, outputName,
-                                                 extensionTag))
+                                                 extensionTag), ",")
 
     def generateTitle(self):
         self.videoTitle = "{} | {} | Livre {} Fable {}".format(
@@ -53,6 +54,7 @@ class ProcessFable:
         self.videoDescription = []
 
         self.videoDescription.append(self.videoTitle)
+        self.videoDescription.append("\n")
         self.videoDescription.append("\n")
         self.videoDescription.append("___")
         self.videoDescription.append("\n")
@@ -70,16 +72,21 @@ class ProcessFable:
         self.videoDescription.append("Video générée automatiquement.")
         self.videoDescription.append("\n")
         self.videoDescription.append(finalCopyright)
+        self.videoDescription.append("\n")
+        self.videoDescription.append(linkToChannel)
 
     def generateTag(self):
-        self.videoTag = []
-        self.videoTag.append("bob")
+        self.videoTag = ["Jean de la Fontaine"]
+        self.videoTag += ["Fable"]
+        self.videoTag += [self.title]
+        self.videoTag += self.title.split()
 
-    def writeFile(self, text, output):
+    def writeFile(self, text, output, sep=""):
         output = open(output, "w")
 
         for t in text:
             output.write(t)
+            output.write(sep)
 
         output.close()
 

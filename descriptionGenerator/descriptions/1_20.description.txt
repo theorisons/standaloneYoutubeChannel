@@ -1,4 +1,5 @@
 Le Coq et la Perle | Jean de la Fontaine | Livre 1 Fable 20
+
 ___
 
 Un jour un Coq détourna
@@ -17,4 +18,5 @@ Serait bien mieux mon affaire.
 ___
 
 Video générée automatiquement.
-© Théorisons 2020
+Théorisons 2020
+https://www.youtube.com/théorisons
