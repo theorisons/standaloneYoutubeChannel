@@ -8,7 +8,8 @@ font = "FiraCode-Regular"  #All letter have same size
 colorText = "white"
 
 finalText = "Video generée automatiquement"
-finalCopyright = "© Théorisons 2020"
+finalCopyright = "Théorisons 2020\nhttps://www.youtube.com/théorisons"
+# linkToChannel = "https://www.youtube.com/théorisons"
 
 pathToFablesFromRoot = "./webScrapping/fables/"
 outputFolderVideos = "videos"
@@ -127,7 +128,7 @@ class ProcessFable:
                                lines[i + 1].strip("\n"), 100).video)
 
         tabSegments.append(
-            VideoMaker(finalText, 150, finalCopyright, 150).video)
+            VideoMaker(finalText, 150, finalCopyright, 75).video)
 
         concat = concatenate_videoclips(tabSegments)
         concat.write_videofile("{}/{}".format(pathOutput, outputName),
