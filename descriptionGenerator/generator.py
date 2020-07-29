@@ -15,13 +15,19 @@ textToInsert = {
         "finalText": "Video generée automatiquement",
         "linkChannel": "https://www.youtube.com/théorisons",
         "book": "Livre",
-        "fable": "Fable"
+        "fable": "Fable",
+        "children": "Enfants",
+        "text": "texte",
+        "speech": "raconte"
     },
     "en": {
         "finalText": "Video generated automatically",
         "linkChannel": "https://www.youtube.com/théorisons",
         "book": "Book",
-        "fable": "Fable"
+        "fable": "Fable",
+        "children": "Children",
+        "text": "text",
+        "speech": "speech",
     }
 }
 
@@ -103,10 +109,19 @@ class ProcessFable:
         self.videoDescription.append("\n")
 
     def generateTag(self):
-        self.videoTag = ["Jean de la Fontaine"]
+        self.videoTag = [writer]
         self.videoTag += ["Fable"]
+        self.videoTag += [
+            "{} {}".format(textToInsert[self.lang]["book"], self.nbBook)
+        ]
+        self.videoTag += [
+            "{} {}".format(textToInsert[self.lang]["fable"], self.nbFable)
+        ]
         self.videoTag += [self.title]
         self.videoTag += self.title.split()
+        self.videoTag += [textToInsert[self.lang]["children"]]
+        self.videoTag += [textToInsert[self.lang]["text"]]
+        self.videoTag += [textToInsert[self.lang]["speech"]]
 
     def writeFile(self, text, output, sep=""):
         output = open(output, "w")

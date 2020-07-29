@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Le Renard et la Cigogne,Le,Renard,et,la,Cigogne,
+Jean de la Fontaine,Fable,Livre 1,Fable 18,Le Renard et la Cigogne,Le,Renard,et,la,Cigogne,Enfants,texte,raconte,
