@@ -1,10 +1,8 @@
-_:gb: / :us: : Bellow !_
+- [:fr: Lire en Français](#chaîne-youtube-autonome)
+- [:gb: / :us: : Read in English](#standolone-youtube-channel)
 
----
+# Standolone YouTube channel
 
----
-
-_:fr: Français ici_
 
 # Chaîne YouTube autonome
 
@@ -110,27 +108,3 @@ python3 main.py
 ```
 
 Crée un répertoire `videos`. Parcourt toutes les fables et construit la vidéo.
-
----
-
----
-
-_:gb: / :us: : English here_
-
----
-
----
-
-# Standalone YouTube Channel
-
-## Overview
-
-Code of the standalone youtube channel shown on the video **[Title](https://youtu.be/LINK "Watch the video")**.
-
----
-
----
-
-```
-
-```
