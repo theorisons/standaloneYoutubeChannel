@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import credentials
+from credentialsPixabay import infosPixabay
 import requests
 import os
 from PIL import Image
@@ -12,11 +12,11 @@ class generateURL:
         self.query = query
 
     def getLink(self):
-        link = credentials.infosPixabay()["link"]
+        link = infosPixabay()["link"]
         return (link)
 
     def getPrivateKey(self):
-        privateKey = credentials.infosPixabay()["key"]
+        privateKey = infosPixabay()["key"]
         return (f"key={privateKey}")
 
     def getQuery(self):
@@ -43,7 +43,6 @@ class Pixabay:
     def __init__(self, query):
         self.responseJson = requests.get(generateURL(query).getUrl()).json()
         os.system("mkdir images")
-
 
         items = self.responseJson["hits"]
 
