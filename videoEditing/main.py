@@ -12,7 +12,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 # Change the working directory.
 # Use the parent one. Allows to import module from a parent directory.
 
-from API.aws import TextToSpeech
+from API.AWS.aws import TextToSpeech
 
 ## Video script
 
