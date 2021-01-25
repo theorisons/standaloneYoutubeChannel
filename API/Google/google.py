@@ -77,20 +77,22 @@ class OptionGoogle:
         self.snippet["description"] = self.getTextFromFile(nameFile)
 
     def setCategoryId(self):
+        # https://gist.github.com/dgp/1b24bf2961521bd75d6c
         self.snippet["categoryId"] = 27  # Education
 
     def setThumbnails(self):
         self.snippet["thumbnails"] = {}
 
     def setVisibility(self):
-        self.status["privacyStatus"] = "unlisteds"
+        self.status["privacyStatus"] = "unlisted"
 
     def setLanguage(self):
         self.snippet["defaultLanguage"] = self.lang
 
     def setDeclaredMadeForKids(self):
         # The content if totally for kids (at least it was meant to be)
-        self.status["DeclaredMadeForKids"] = True
+        self.status["madeForKids"] = True
+        self.status["selfDeclaredMadeForKids"] = True
 
     def setTitle(self):
         nameFile = "{}.title.{}".format(self.nameFile, self.lang)
@@ -193,10 +195,10 @@ class Google:
 
 
 def main():
+    # pass
     option = OptionGoogle("1_2", "en")
-    print(option)
-    # yt = Google()
-    # yt.upload(option)
+    yt = Google()
+    yt.upload(option)
 
 
 if __name__ == "__main__":
