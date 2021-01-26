@@ -44,13 +44,15 @@ class TextToSpeech:
         voice = "Lea" if lang == "fr" else "Kendra"
         langCode = "fr-FR" if lang == "fr" else "en-US"
 
+        pathFile = "{}.{}.mp3".format(pathOutput, lang)
+
         response = self.polly.synthesize_speech(Engine="standard",
                                                 Text=text,
                                                 OutputFormat="mp3",
                                                 VoiceId=voice,
                                                 LanguageCode=langCode)
 
-        file = open("{}.{}.mp3".format(pathOutput, lang), 'wb')
+        file = open(pathFile, 'wb')
         file.write(response['AudioStream'].read())
         file.close()
 

@@ -29,14 +29,14 @@ textToInsert = {
         "writer": "Les fables de la Fontaine"
     },
     "en": {
-        "finalText": "Video generated automatically",
+        "finalText": "Self generated video",
         "book": "Book",
         "fable": "Fable",
         "writer": "La Fontaine's Fables"
     }
 }
 
-finalCopyright = "Théorisons 2020"
+finalCopyright = "Théorisons 2021"
 
 sizeVideo = (1920, 1080)  #FullHD size
 font = "TeXGyreCursor-Regular"  #Monospaced font
@@ -45,14 +45,10 @@ colorText = "white"
 
 pathToFablesFromRoot = "./webScrapping/fables/"
 pathFromInsideFable = "../../../videoEditing/"
-folderTmp = "tmp"
+folderSrc = "src"
 outputFolderVideos = "videos"
 
-fromFableToTmp = "{}{}".format(pathFromInsideFable, folderTmp)
-
-fromFableToWriter = pathFromInsideFable
-folderWriterAudio = "src"
-nameFileWriter = "presentation"
+fromFableToSrc = "{}{}".format(pathFromInsideFable, folderSrc)
 
 delayBeetwenSentence = 0.5
 
@@ -92,25 +88,24 @@ def generateName(text):
     return (result.hexdigest())
 
 
-def getAudio(lang, text, path, polly="", name=""):
-    # Generate the audio from the text with aws polly
+def getAudio(lang, text, path, polly):
+    # Generate the audio from the text with aws polly if not already exist
     # Path is the file where the audio will be save
-    # If no name given, one will be generated
 
-    nameFile = name if name != "" else generateName(text)
-
-    service = polly if polly != "" else TextToSpeech()
-
+    nameFile = generateName(text)
     pathOutput = "{}/{}".format(path, nameFile)
-    service.translate(lang, text, pathOutput)
+    filePath = "./{}.{}.mp3".format(pathOutput, lang)
 
-    return ("{}.{}.mp3".format(pathOutput, lang))
+    if (not os.path.exists(filePath)):
+        polly.translate(lang, text, pathOutput)
+
+    return (filePath)
 
 
 class SegmentVideo:
     # Create a video segment with a single text display in the center
     def __init__(self, polly, lang, background, textTop, sizeTop, textRead,
-                 audioFile, delay):
+                 delay):
         # Init all given parameters
         self.polly = polly
         self.lang = lang
@@ -121,17 +116,12 @@ class SegmentVideo:
         self.top = TextToDisplay(sizeTop, textTop)
 
         self.textRead = textRead
-        self.audioFile = audioFile
 
     def _getAudio(self):
         # Handle if the clip needs audio
-        if self.audioFile != "":
-            # Premade audio file
-            return (self.audioFile)
-
         if self.textRead != "":
             # Need to generate audio for the text on top
-            return (getAudio(self.lang, self.textRead, fromFableToTmp,
+            return (getAudio(self.lang, self.textRead, fromFableToSrc,
                              self.polly))
 
         # No audio for this clip
@@ -163,11 +153,11 @@ class SegmentVideo:
 class SegmentVideoMultiple(SegmentVideo):
     # Create a segment of video with 2 texts display, on the top and on the bottom
     def __init__(self, polly, lang, background, textTop, sizeTop, textRead,
-                 audioFile, delay, textBottom, sizeBottom):
+                 delay, textBottom, sizeBottom):
         # Init parameters
 
         SegmentVideo.__init__(self, polly, lang, background, textTop, sizeTop,
-                              textRead, audioFile, delay)  # Use OOP
+                              textRead, delay)  # Use OOP
 
         self.bottom = TextToDisplay(sizeBottom, textBottom)
 
@@ -265,15 +255,14 @@ class ProcessFable:
         tabSegments = []  # Segments of the video
 
         writerRead = SegmentVideoMultiple(
-            self.polly, lang, self.background, title, 150, "",
-            "{}{}/{}.{}.mp3".format(fromFableToWriter, folderWriterAudio,
-                                    nameFileWriter, lang), 0.2,
+            self.polly, lang, self.background, title, 150,
+            textToInsert[lang]["writer"], 0.2,
             "{} {} {} {}".format(textToInsert[lang]["book"], nbBook,
                                  textToInsert[lang]["fable"], nbFable),
             100).createVideo()  # Read the writer, generate once
 
         titleRead = SegmentVideoMultiple(
-            self.polly, lang, self.background, title, 150, title, "",
+            self.polly, lang, self.background, title, 150, title,
             delayBeetwenSentence,
             "{} {} {} {}".format(textToInsert[lang]["book"], nbBook,
                                  textToInsert[lang]["fable"], nbFable),
@@ -287,28 +276,27 @@ class ProcessFable:
                     1):  #Odd number lines, last segment has no bottom text
                 tabSegments.append(
                     SegmentVideo(self.polly, lang, self.background,
-                                 lines[i].strip("\n"), 100, lines[i], "",
+                                 lines[i].strip("\n"), 100, lines[i],
                                  delayBeetwenSentence).createVideo()
                 )  # Bottom can't be empty
             else:
                 tabSegments.append(
                     SegmentVideoMultiple(self.polly, lang, self.background,
                                          lines[i].strip("\n"), 100, lines[i],
-                                         "", delayBeetwenSentence,
+                                         delayBeetwenSentence,
                                          lines[i + 1].strip('\n'),
                                          100).createVideo())  # Read top line
 
                 tabSegments.append(
                     SegmentVideoMultiple(self.polly, lang, self.background,
                                          lines[i].strip("\n"), 100,
-                                         lines[i + 1], "",
-                                         delayBeetwenSentence,
+                                         lines[i + 1], delayBeetwenSentence,
                                          lines[i + 1].strip('\n'),
                                          100).createVideo())  # Read top line
         # Add the final copyright
         tabSegments.append(
             SegmentVideoMultiple(self.polly, lang, self.background,
-                                 textToInsert[lang]["finalText"], 150, "", "",
+                                 textToInsert[lang]["finalText"], 150, "",
                                  delayBeetwenSentence * 5, finalCopyright,
                                  75).createVideo())  # No audio on this segment
 
@@ -325,14 +313,12 @@ class ProcessFable:
         self.background = ColorClip(size=sizeVideo, color=color)
 
 
-def generateOnceWriter():
+def generateWriter(polly):
     # Generate the audio for the writer
-    os.system("mkdir {}".format(folderWriterAudio))  # Create the folder
-
-    getAudio("fr", textToInsert["fr"]["writer"],
-             "{}/".format(folderWriterAudio), "", nameFileWriter)
-    getAudio("en", textToInsert["en"]["writer"],
-             "{}/".format(folderWriterAudio), "", nameFileWriter)
+    getAudio("fr", textToInsert["fr"]["writer"], "{}".format(fromFableToSrc),
+             polly)
+    getAudio("en", textToInsert["en"]["writer"], "{}".format(fromFableToSrc),
+             polly)
 
 
 def processFolder(folder):
@@ -342,23 +328,20 @@ def processFolder(folder):
 
     polly = TextToSpeech()  # Generate one instance of polly
 
+    generateWriter(polly)
+
     files = os.listdir()
 
     for file in files:
         ProcessFable(polly, file, "{}{}".format(pathFromInsideFable,
                                                 outputFolderVideos))
 
-    os.chdir("..")
-
 
 def main():
     os.system("mkdir {}".format(
         outputFolderVideos))  # Create the ouput folder for the video
-    os.system("mkdir {}".format(
-        folderTmp))  # Create the temporary file for the audio
-
-    # Create the audio use multiple time (writer name)
-    generateOnceWriter()
+    os.system(
+        "mkdir {}".format(folderSrc))  # Create the src file for the audio
 
     os.chdir("../{}".format(
         pathToFablesFromRoot))  # Change directory into the fable

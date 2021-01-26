@@ -37,7 +37,8 @@ RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError,
 # codes is raised.
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
-CLIENT_SECRETS_FILE = "credentialsGoogle.json"
+CLIENT_SECRETS_FILE = "../API/Google/credentialsGoogle.json"
+# Path from where it is called
 
 # This OAuth 2.0 access scope allows an application to upload files to the
 # authenticated user's YouTube channel, but doesn't allow other types of access.
@@ -49,7 +50,9 @@ VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 
 
 class OptionGoogle:
-    def __init__(self, nameFile, lang):
+    def __init__(self, pathMeta, pathVideo, nameFile, lang):
+        self.pathMeta = pathMeta
+        self.pathVideo = pathVideo
         self.nameFile = nameFile
         self.lang = lang
         self.generateMetadata()
@@ -73,7 +76,8 @@ class OptionGoogle:
         self.body["status"] = self.status
 
     def setDescription(self):
-        nameFile = "{}.description.{}".format(self.nameFile, self.lang)
+        nameFile = "{}{}.description.{}".format(self.pathMeta, self.nameFile,
+                                                self.lang)
         self.snippet["description"] = self.getTextFromFile(nameFile)
 
     def setCategoryId(self):
@@ -95,15 +99,18 @@ class OptionGoogle:
         self.status["selfDeclaredMadeForKids"] = True
 
     def setTitle(self):
-        nameFile = "{}.title.{}".format(self.nameFile, self.lang)
+        nameFile = "{}{}.title.{}".format(self.pathMeta, self.nameFile,
+                                          self.lang)
         self.snippet["title"] = self.getTextFromFile(nameFile)
 
     def setTag(self):
-        nameFile = "{}.tag.{}".format(self.nameFile, self.lang)
+        nameFile = "{}{}.tag.{}".format(self.pathMeta, self.nameFile,
+                                        self.lang)
         self.snippet["tags"] = self.getTextFromFile(nameFile).split(",")
 
     def setPathVideo(self):
-        self.pathVideo = "{}.{}.avi".format(self.nameFile, self.lang)
+        self.pathVideo = "{}{}.{}.avi".format(self.pathVideo, self.nameFile,
+                                              self.lang)
 
     def getTextFromFile(self, filePath):
         f = open(filePath, "r")
@@ -195,10 +202,7 @@ class Google:
 
 
 def main():
-    # pass
-    option = OptionGoogle("1_2", "en")
-    yt = Google()
-    yt.upload(option)
+    pass
 
 
 if __name__ == "__main__":
