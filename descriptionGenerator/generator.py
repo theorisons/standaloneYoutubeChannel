@@ -12,26 +12,32 @@ extensionTitle = "title"
 
 textToInsert = {
     "fr": {
-        "finalText": "Video generée automatiquement",
+        "finalText": "Video générée automatiquement",
         "linkChannel": "https://www.youtube.com/théorisons",
         "book": "Livre",
         "fable": "Fable",
         "children": "Enfants",
         "text": "texte",
-        "speech": "raconte"
+        "speech": "raconte",
+        "classic": "classique",
+        "literature": "littérature",
+        "french": "français"
     },
     "en": {
         "finalText": "Video generated automatically",
-        "linkChannel": "https://www.youtube.com/théorisons",
+        "linkChannel": "https://www.youtube.com/channel/UC3kl8eo02cL-Co3cTtkBiNQ",
         "book": "Book",
         "fable": "Fable",
         "children": "Children",
         "text": "text",
         "speech": "speech",
+        "classic": "classic",
+        "literature": "literature",
+        "french": "french",
     }
 }
 
-finalCopyright = "Théorisons 2020"
+finalCopyright = "Théorisons 2021"
 
 nameFileDescriptions = "descriptionGenerator"
 pathToFablesFromRoot = "./webScrapping/fables/"
@@ -122,6 +128,9 @@ class ProcessFable:
         self.videoTag += [textToInsert[self.lang]["children"]]
         self.videoTag += [textToInsert[self.lang]["text"]]
         self.videoTag += [textToInsert[self.lang]["speech"]]
+        self.videoTag += [textToInsert[self.lang]["classic"]]
+        self.videoTag += [textToInsert[self.lang]["literature"]]
+        self.videoTag += [textToInsert[self.lang]["french"]]
 
     def writeFile(self, text, output, sep=""):
         output = open(output, "w")

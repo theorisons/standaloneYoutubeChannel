@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Livre 12,Fable 9,Le Loup et le Renard,Le,Loup,et,le,Renard,Enfants,texte,raconte,
+Jean de la Fontaine,Fable,Livre 12,Fable 9,Le Loup et le Renard,Le,Loup,et,le,Renard,Enfants,texte,raconte,classique,littérature,français,

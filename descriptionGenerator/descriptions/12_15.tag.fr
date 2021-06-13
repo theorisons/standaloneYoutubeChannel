@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Livre 12,Fable 15,Le Corbeau, la Gazelle, la Tortue et le Rat,Le,Corbeau,,la,Gazelle,,la,Tortue,et,le,Rat,Enfants,texte,raconte,
+Jean de la Fontaine,Fable,Livre 12,Fable 15,Le Corbeau, la Gazelle, la Tortue et le Rat,Le,Corbeau,,la,Gazelle,,la,Tortue,et,le,Rat,Enfants,texte,raconte,classique,littérature,français,

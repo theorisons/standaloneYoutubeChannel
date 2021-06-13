@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Livre 1,Fable 7,La Besace,La,Besace,Enfants,texte,raconte,
+Jean de la Fontaine,Fable,Livre 1,Fable 7,La Besace,La,Besace,Enfants,texte,raconte,classique,littérature,français,

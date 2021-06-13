@@ -1,13 +1,10 @@
-- [:fr: : Lire en Français](#chaîne-youtube-autonome)
-- [:gb: / :us: : Read in English](#standolone-youtube-channel)
-
-# Standolone YouTube channel
+# Standalone YouTube channel
 
 ## Overview 
 
-Autonomous YouTube channel source code. Global explanation in the video **[Title](https://youtu.be/LIEN "Watch the video")**.
+Source code of an Autonomous YouTube channel. Global explanation in the video _How to create a standalone YouTube channel_ **[here in english](https://youtu.be/LIEN "Watch the video")** or **[ici en français](https://youtu.be/LIEN "Regarder la vidéo")**.
 
-The project is to create automatic contents for a YouTube channel. Videos are about _les fables de La Fontaine_, French stories that are in public domain.
+The project is to create and publish automatic contents for a YouTube channel. Videos are about _les fables de La Fontaine_, French stories that are in public domain.
 
 - Les fables are collected with _webscrapping_ `/webScrapping` then placed in the folder depending on the book `/webScrapping/fables`.
 
@@ -48,10 +45,6 @@ The cloud service of Amazon is used for:
 
 Google's API are used to upload videos on YouTube with the title, description, tags and thumbnails.
 
-### Pixabay
-
-Used to get copyright free images.
-The API needs authentification with private token. It is necessary to login in with an account and add the token to the file `/API/credentials.py`.
 
 ## Execution
 
@@ -106,111 +99,3 @@ python3 main.py
 ```
 
 Create a folder `videos`. Iterate over all fables and create a video.
-
-
-
-# Chaîne YouTube autonome
-
-## Présentation
-
-Code de la chaîne youtube autonome, présenté dans la video **[Titre](https://youtu.be/LIEN "Voir la vidéo")**.
-
-Le projet consiste à alimenter une chaîne YouTube en contenue de manière autonome. Le thème choisi est _les fables de La Fontaine_ (étant des oeuvres du domaine public).
-
-- Les fables sont récupérées grâce à du _webscrapping_ `/webScrapping` puis placé dans un dossier selon leur ouvrage `/webScrapping/fables`.
-
-Le contenu en Français possède une extension `.fr`, celui en Anglais une extension `.en`.
-
-- Les titres, descriptions, tags `/descriptionGenerator` sont générés grâce aux textes des fables puis placé dans un dossier `/descriptionGenerator/descriptions`. Les extensions sont :
-  - `.description` pour les descriptions
-  - `.tag` pour les tags
-  - `.title` pour les titres
-
-Le contenu en Français possède une extension `.fr`, celui en Anglais une extension `.en`.
-
-- Le montage vidéo `/videoEditing` s'appuie sur les textes.
-- Les API `/API` gèrent les différents service:
-  - Récupération d'images libre de droit
-  - Traduction de texte Français / Anglais
-  - Conversion Texte vers Parole (Anglais et Français)
-  - Upload de vidéo sur YouTube
-  - Réponse aux commentaires sur YouTube
-
-## Dépendences
-
-- Python 3
-- BeautifulSoup
-- moviepy
-- boto3
-
-## API
-
-### AWS
-
-Le service cloud d'Amazon est utilisé pour:
-
-- Traduire du texte avec **[Amazon Translate](https://aws.amazon.com/fr/translate/ "Voir la présentation")**
-- Convertir du texte en voix avec **[Amazon Polly](https://aws.amazon.com/fr/polly/ "Voir la présentation")**
-
-### Google
-
-Les API de Google sont utilisées pour uploader des vidéos sur YouTube avec titre, description, tags et miniature.
-
-### Pixabay
-
-Permet de récupérer des images libres de droits.
-Les requêtes API nécessitent d'être identifier avec un jeton privé. Il faut donc s'enregistrer avec un compte sur les différents service et ajouter ses jetons dans le fichier `/API/credentials.py`.
-
-## Exécution
-
-Liste des commandes pour réaliser toutes les manipulations pensées pour ce projet.
-On suppose que le répertoire de travail est `./` .
-
-### WebScrapping des textes de Fables
-
-```
-cd ./webScrapping
-python3 webscrappingFrench.py
-```
-
-Crée un nouveau répertoire `fables` avec des sous-dossiers contenant le numéro du livre. Dans chaque sous-dossier, se situe des fichiers textes dont le nom est `<numeroFable>.fr`.
-
-La structure des fables est:
-
-```
-<Numéro du livre>
-<Numéro de la fable>
-<Titre de la fable>
-<Contenu de la fable>
-```
-
-### Traduction des fables en Anglais
-
-```
-cd ./webScrapping
-python3 translateFablesEnglish.py
-```
-
-Parcourt tous les fichiers de fables `<numeroFable>.fr` puis crée un nouveau fichier `<numeroFable>.en` contenu le contenu traduit.
-
-**ATTENTION AUCUN FICHIER `.en` NE DOIT ETRE PRESENT** sinon le contenu sera simplement écrasé. (Vient du fait que l'on itère sur tous les fichiers et non juste les fichiers en `.fr`).
-
-La structure des fables reste la même.
-
-### Génération des métadonnées des vidéos
-
-```
-cd ./descriptionGenerator
-python3 generator.py
-```
-
-Crée un répertoire `descriptions`. Parcourt tous les fichiers de fables `<numeroFable>.*` puis crée un 3 fichiers par fables (titre, tags et description).
-
-### Génération des vidéos
-
-```
-cd ./videoEditing
-python3 main.py
-```
-
-Crée un répertoire `videos`. Parcourt toutes les fables et construit la vidéo.

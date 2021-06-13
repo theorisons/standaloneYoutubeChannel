@@ -42,7 +42,11 @@ CLIENT_SECRETS_FILE = "../API/Google/credentialsGoogle.json"
 
 # This OAuth 2.0 access scope allows an application to upload files to the
 # authenticated user's YouTube channel, but doesn't allow other types of access.
-SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
+SCOPES = [
+    "https://www.googleapis.com/auth/youtube.readonly",
+    'https://www.googleapis.com/auth/youtube.upload',
+    "https://www.googleapis.com/auth/youtube.force-ssl"
+]
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
@@ -50,18 +54,63 @@ VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 
 
 class OptionGoogle:
-    def __init__(self, pathMeta, pathVideo, nameFile, lang):
-        self.pathMeta = pathMeta
-        self.pathVideo = pathVideo
-        self.nameFile = nameFile
-        self.lang = lang
-        self.generateMetadata()
+    def __init__(self):
+        self.generateMetadataSuper()
 
-    def generateMetadata(self):
+    def generateMetadataSuper(self):
         self.body = {}
         self.snippet = {}
         self.status = {}
 
+        self.body["snippet"] = self.snippet
+        self.body["status"] = self.status
+
+    def applyDescription(self, description):
+        self.snippet["description"] = description
+
+    def applyCategoryId(self, categoryId=1):
+        # https://gist.github.com/dgp/1b24bf2961521bd75d6c
+        self.snippet["categoryId"] = categoryId  # Default (Film and Animation)
+
+    def applyVisibility(self, visibility):
+        self.status["privacyStatus"] = visibility
+
+    def applyLanguage(self, lang):
+        self.snippet["defaultLanguage"] = lang
+
+    def applyDeclaredMadeForKids(self, madeForKids=True):
+        # The content if totally for kids (at least it was meant to be)
+        self.status["madeForKids"] = madeForKids
+        self.status["selfDeclaredMadeForKids"] = madeForKids
+
+    def applyTitle(self, title):
+        self.snippet["title"] = title
+
+    def getTitle(self):
+        return (self.snippet["title"])
+
+    def applyTag(self, tagsList):
+        self.snippet["tags"] = tagsList.split(",")
+
+    def __repr__(self):
+        s = "body: {}".format(pprint.pformat(self.body))
+        return (s)
+
+
+class OptionGoogleVideo(OptionGoogle):
+    def __init__(self, pathMeta, pathVideo, book, fable, lang):
+        super().__init__()
+
+        self.pathMeta = pathMeta
+        self.pathVideo = pathVideo
+        self.nameFile = "{}_{}".format(book, fable)
+        self.book = book
+        self.fable = fable
+        self.lang = lang
+
+        self.generateMetadata()
+
+    def generateMetadata(self):
         self.setDescription()
         self.setCategoryId()
         self.setThumbnails()
@@ -72,41 +121,38 @@ class OptionGoogle:
         self.setTag()
         self.setPathVideo()
 
-        self.body["snippet"] = self.snippet
-        self.body["status"] = self.status
-
     def setDescription(self):
         nameFile = "{}{}.description.{}".format(self.pathMeta, self.nameFile,
                                                 self.lang)
-        self.snippet["description"] = self.getTextFromFile(nameFile)
+        super().applyDescription(self.getTextFromFile(nameFile))
 
     def setCategoryId(self):
         # https://gist.github.com/dgp/1b24bf2961521bd75d6c
-        self.snippet["categoryId"] = 27  # Education
+        super().applyCategoryId()  # Default film and animation
 
     def setThumbnails(self):
-        self.snippet["thumbnails"] = {}
+        # super().snippet["thumbnails"] = {}
+        pass
 
     def setVisibility(self):
-        self.status["privacyStatus"] = "unlisted"
+        super().applyVisibility("public")
 
     def setLanguage(self):
-        self.snippet["defaultLanguage"] = self.lang
+        super().applyLanguage(self.lang)
 
     def setDeclaredMadeForKids(self):
         # The content if totally for kids (at least it was meant to be)
-        self.status["madeForKids"] = True
-        self.status["selfDeclaredMadeForKids"] = True
+        super().applyDeclaredMadeForKids(True)
 
     def setTitle(self):
         nameFile = "{}{}.title.{}".format(self.pathMeta, self.nameFile,
                                           self.lang)
-        self.snippet["title"] = self.getTextFromFile(nameFile)
+        super().applyTitle(self.getTextFromFile(nameFile))
 
     def setTag(self):
         nameFile = "{}{}.tag.{}".format(self.pathMeta, self.nameFile,
                                         self.lang)
-        self.snippet["tags"] = self.getTextFromFile(nameFile).split(",")
+        super().applyTag(self.getTextFromFile(nameFile))
 
     def setPathVideo(self):
         self.pathVideo = "{}{}.{}.avi".format(self.pathVideo, self.nameFile,
@@ -119,17 +165,52 @@ class OptionGoogle:
         return (content)
 
     def __repr__(self):
-        s = "path file: {}".format(self.pathVideo)
-        s = "{}\nbody: {}".format(s, pprint.pformat(self.body))
+        s = super().__repr__()
+        return (s)
+
+
+class OptionGooglePlaylist(OptionGoogle):
+    def __init__(self, book, lang):
+        super().__init__()
+
+        self.book = book
+        self.lang = lang
+
+        self.generateMetadata()
+
+    def generateMetadata(self):
+        self.setTitle()
+        self.setDescription()
+        self.setLanguage()
+        self.setVisibility()
+
+    def setTitle(self):
+        author = "Jean de la Fontaine"
+        if (self.lang == "fr"):
+            title = "Livre "
+        else:
+            title = "Book "
+
+        title = title + "{} - {}".format(self.book, author)
+        super().applyTitle(title)
+
+    def setDescription(self):
+        super().applyDescription(super().getTitle())
+
+    def setVisibility(self):
+        super().applyVisibility("public")
+
+    def setLanguage(self):
+        super().applyLanguage(self.lang)
+
+    def __repr__(self):
+        s = super().__repr__()
         return (s)
 
 
 class Google:
     def __init__(self):
         self.youtube = self.get_authenticated_service()
-
-    def upload(self, optionGoogle):
-        self.initialize_upload(optionGoogle)
 
     def get_authenticated_service(self):
         # Authorize the request and store authorization credentials.
@@ -138,11 +219,68 @@ class Google:
         credentials = flow.run_console()
         return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    def initialize_upload(self, optionGoogle):
+    def upload(self, optionGoogle):
+        self.initialize_upload(optionGoogle)
+
+    def getIdVideosFromPlaylist(self, idPlaylist):
+        list_request = self.youtube.playlistItems().list(part="snippet",
+                                                         maxResults=50,
+                                                         playlistId=idPlaylist)
+        response = list_request.execute()
+        listVideo = response["items"]
+        ids = []
+
+        for v in listVideo:
+            ids.append({
+                "id": v["snippet"]["resourceId"]["videoId"],
+                "resourceId": v["snippet"]["resourceId"],
+                "title": v["snippet"]["title"]
+            })
+
+        return (ids)
+
+    def addThumbnailToVideo(self, videoId, thumbnailPath):
+        request = self.youtube.thumbnails().set(
+            videoId=videoId, media_body=MediaFileUpload(thumbnailPath))
+        response = request.execute()
+
+    def addVideoToPlaylist(self, resourceId, playlistId, position):
+        request = self.youtube.playlistItems().insert(part="snippet",
+                                                      body={
+                                                          "snippet": {
+                                                              "playlistId":
+                                                              playlistId,
+                                                              "resourceId":
+                                                              resourceId,
+                                                              "position":
+                                                              position
+                                                          }
+                                                      })
+        response = request.execute()
+
+    def createPlaylist(self, snippet, status):
+        request = self.youtube.playlists().insert(part="snippet, status",
+                                                  body={
+                                                      "snippet": snippet,
+                                                      "status": status
+                                                  })
+        response = request.execute()
+        return (response["id"])
+
+    def updateVideo(self, id, snippet, status):
+        request = self.youtube.videos().update(part="snippet, status",
+                                               body={
+                                                   "id": id,
+                                                   "snippet": snippet,
+                                                   "status": status
+                                               })
+        response = request.execute()
+
+    def initialize_upload(self, optionVideo):
         # Call the API's videos.insert method to create and upload the video.
         insert_request = self.youtube.videos().insert(
-            part=','.join(optionGoogle.body.keys()),
-            body=optionGoogle.body,
+            part=','.join(optionVideo.body.keys()),
+            body=optionVideo.body,
             # The chunksize parameter specifies the size of each chunk of data, in
             # bytes, that will be uploaded at a time. Set a higher value for
             # reliable connections as fewer chunks lead to faster uploads. Set a lower
@@ -154,7 +292,7 @@ class Google:
             # practice, but if you're using Python older than 2.6 or if you're
             # running on App Engine, you should set the chunksize to something like
             # 1024 * 1024 (1 megabyte).
-            media_body=MediaFileUpload(optionGoogle.pathVideo,
+            media_body=MediaFileUpload(optionVideo.pathVideo,
                                        chunksize=-1,
                                        resumable=True))
 

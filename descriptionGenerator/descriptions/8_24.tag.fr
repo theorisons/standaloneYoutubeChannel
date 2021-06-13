@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Livre 8,Fable 24,L’Éducation,L’Éducation,Enfants,texte,raconte,
+Jean de la Fontaine,Fable,Livre 8,Fable 24,L’Éducation,L’Éducation,Enfants,texte,raconte,classique,littérature,français,

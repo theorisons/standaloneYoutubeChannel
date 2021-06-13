@@ -1,1 +1,1 @@
-Jean de la Fontaine,Fable,Livre 12,Fable 19,Le Singe,Le,Singe,Enfants,texte,raconte,
+Jean de la Fontaine,Fable,Livre 12,Fable 19,Le Singe,Le,Singe,Enfants,texte,raconte,classique,littérature,français,
